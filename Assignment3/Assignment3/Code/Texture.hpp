@@ -30,5 +30,16 @@ public:
         return Eigen::Vector3f(color[0], color[1], color[2]);
     }
 
+    Eigen::Vector3f getColorBilinear(float u,float v)
+    {
+        auto u_img = u * width;
+        auto v_img = (1 - v) * height;
+
+        cv::Mat patch;
+        cv::getRectSubPix(image_data,cv::Size(1,1),cv::Point2f(u_img,v_img),patch);
+        auto color = patch.at<cv::Vec3b>(0,0);
+
+        return Eigen::Vector3f(color[0],color[1],color[2]);
+    }
 };
 #endif //RASTERIZER_TEXTURE_H

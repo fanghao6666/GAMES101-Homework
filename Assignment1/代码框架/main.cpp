@@ -6,6 +6,7 @@
 
 constexpr double MY_PI = 3.1415926;
 
+
 Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
 {
     Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
@@ -49,16 +50,18 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     // TODO: Implement this function
     // Create the projection matrix for the given parameters.
     // Then return it.
-    float cot_v = 1.0 / tan(eye_fov);
+    
+    eye_fov = eye_fov * MY_PI / 180;
+    float fax = 1.0f / (float)tan(eye_fov * 0.5f);
 
     Eigen::Matrix4f perspective;
-    perspective << cot_v / aspect_ratio,0,0,0,
-                  0,cot_v,0,0,
-                  0,0,(zFar - zNear),1,
-                  0,0,zFar * zNear / (zNear - zFar),0;
+    perspective << (float)(fax / aspect_ratio),0,0,0,
+                    0,(float)(fax),0,0,
+                    0,0,zFar / (zFar - zNear),0,
+                    0,0,1,-zNear * zFar / (zFar - zNear);
 
     projection = perspective * projection;
-    
+
     return projection;
 }
 
