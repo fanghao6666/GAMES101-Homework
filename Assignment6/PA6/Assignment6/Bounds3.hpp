@@ -96,6 +96,29 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
     // invDir: ray direction(x,y,z), invDir=(1.0/x,1.0/y,1.0/z), use this because Multiply is faster that Division
     // dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x>0),int(y>0),int(z>0)], use this to simplify your logic
     // TODO test if ray bound intersects
+
+    // t = (ray.xyz - origin.xyz) / dxyz
+    double tmin(0.0),tmax(0.0);
+    // x
+    tmin = (pMin.x - ray.origin.x) * invDir.x;
+    tmax = (pMax.x - ray.origin.x) * invDir.x;
+    double tmin_x = dirIsNeg[0] > 0 ? tmin : tmax;
+    double tmax_x = dirIsNeg[0] > 0 ? tmax : tmin;
+    // y
+    tmin = (pMin.y - ray.origin.y) * invDir.y;
+    tmax = (pMax.y - ray.origin.y) * invDir.y;
+    double tmin_y = dirIsNeg[1] > 0 ? tmin : tmax;
+    double tmax_y = dirIsNeg[1] > 0 ? tmax : tmin;
+    // z
+    tmin = (pMin.z - ray.origin.z) * invDir.z;
+    tmax = (pMax.z - ray.origin.z) * invDir.z;
+    double tmin_z = dirIsNeg[2] > 0 ? tmin : tmax;
+    double tmax_z = dirIsNeg[2] > 0 ? tmax : tmin;
+
+    if(std::max(tmin_x,std::max(tmin_y,tmin_z)) < std::min(tmax_x,std::min(tmax_y,tmax_z)))
+        return true;
+    else
+        return false;
     
 }
 
